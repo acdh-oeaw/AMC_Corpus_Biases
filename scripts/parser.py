@@ -4,12 +4,28 @@ import re
 import pickle
 import json
 from collections import defaultdict
+
 import pandas as pd
 import matplotlib.pyplot as plt
+
 import xml.etree.ElementTree as ET
 from lxml import etree
+
 from bs4 import BeautifulSoup as bs
 from bs4 import NavigableString
+
+import nltk
+from nltk.tokenize import WordPunctTokenizer
+from nltk.tokenize import sent_tokenize
+from nltk.stem import WordNetLemmatizer
+
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+
+stemmer = WordNetLemmatizer()
+tokenizer = WordPunctTokenizer()
+de_stop = set(nltk.corpus.stopwords.words('german'))
 
 def parse(path_to_file):
     with open(path_to_file, "r") as f:
@@ -98,7 +114,13 @@ def parse(path_to_file):
             # delete space(s) after: (
             text = re.sub(r'([(])\s+', r'\1', text)
             # delete: *
-            text = re.sub('\*', '', text)        
+            text = re.sub('\*', '', text)       
+            # Remove extra white space from text
+            text = re.sub(r'\s+', ' ', text, flags=re.I)
+            # Remove all the special characters from text
+            text = re.sub(r'\W', ' ', str(text))
+            # Remove all single characters from text
+            text = re.sub(r'\s+[a-zA-Z]\s+', ' ', text)
 
             # identifying and extracting subtitle, if available
             if text.find('Utl.') != -1:
@@ -107,7 +129,7 @@ def parse(path_to_file):
             else:
                 subtitle = "None"
 
-            # identifying and extracting place and news agency
+            ## identifying and extracting place and news agency
             place_agency_apa = re.compile(r'^[\w\s]+\([\w\s\/]+\)[\s-]+',re.IGNORECASE)
             place_agency = re.findall(place_agency_apa, text)
             if place_agency:
@@ -119,8 +141,8 @@ def parse(path_to_file):
                 place = "None"
                 agency = "None"
 
-            # identifying and extracting final notes 
-            # e.g. (Schluß),(Forts.),(Fortsetzung),(Forts. mögl.), (Forts. mgl.)
+            ## identifying and extracting final notes 
+            ## e.g. (Schluß),(Forts.),(Fortsetzung),(Forts. mögl.), (Forts. mgl.)
             final_notes_apa = re.compile(r'\(Schluß\)|\(Fort[^\n]+\)',re.IGNORECASE)
             final_notes_sn = re.compile(r'(Bild[.:\/0-9A-Za-z, ]{0,30})$|(Seit[en ]*[.:\/0-9A-Za-z, ]{0,30})$')
             final_notes = re.findall(final_notes_sn, text)
@@ -134,6 +156,6 @@ def parse(path_to_file):
                 final_note = 'None'
                 
             # retrieving some fields from the header
-            headers = df_headers.loc[idx,['id', 'datum']].to_list()
+            #headers = df_headers.loc[idx,['id', 'datum']].to_list()
             #yield (idx, headers, place, agency, title, subtitle, keywords, text, final_note)
-            yield text.split()
+            yield nltk.tokenize.WordPunctTokenizer().tokenize(text)
