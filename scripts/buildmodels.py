@@ -42,19 +42,23 @@ def update_model(model, list_sentences):
 if __name__ == "__main__":
 
     parameters = {'embedding_size':300,
-              'window_size': 8,
-              'min_word': 3,
-              'down_sampling': 1e-2
-             }
+                  'window_size': 5,
+                  'min_word': 3,
+                  'down_sampling': 1e-2
+                 }
     
+    t0 = time.time()
     for idx in range(0,len(df_files),50):
         print(f'Processing files from {idx} to {idx+50}')
+        print(f'{(time.time() - t0) / 3600} Hrs. processing time')
+        print()
         articles = articles_reader(idx,idx+50)
         if idx == 0:
             model = build_model(articles, parameters)
         else:
             model = update_model(model, articles)
-
-    model.save("../outputs/amc.fasttext.300.model")
+        
+        if idx%5000 == 0:
+            model.save("../outputs/amc.fasttext.300.model")
 
 

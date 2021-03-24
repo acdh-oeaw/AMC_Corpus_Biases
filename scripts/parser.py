@@ -1,12 +1,12 @@
 import os
 import sys
 import re
-import pickle
-import json
+#import pickle
+#import json
 from collections import defaultdict
 
 import pandas as pd
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 import xml.etree.ElementTree as ET
 from lxml import etree
@@ -19,13 +19,13 @@ from nltk.tokenize import WordPunctTokenizer
 from nltk.tokenize import sent_tokenize
 from nltk.stem import WordNetLemmatizer
 
-nltk.download('punkt')
-nltk.download('stopwords')
-nltk.download('wordnet')
+#nltk.download('punkt')
+#nltk.download('stopwords')
+#nltk.download('wordnet')
 
-stemmer = WordNetLemmatizer()
+#stemmer = WordNetLemmatizer()
 tokenizer = WordPunctTokenizer()
-de_stop = set(nltk.corpus.stopwords.words('german'))
+#de_stop = set(nltk.corpus.stopwords.words('german'))
 
 def parse(path_to_file):
     with open(path_to_file, "r") as f:
@@ -67,8 +67,8 @@ def parse(path_to_file):
             for field in fields:
                 name = field['name']
                 for satz in field.find_all('s'):
-                    text = re.sub('<g/>','',satz.text)
-                    text = re.sub(r'[\n]+','\n',text)
+                    text = re.sub('<g/>', '', satz.text)
+                    text = re.sub(r'[\n]+','\n', text)
                     rows = re.split('\n',text)[1:-1]
                     for row in rows:
                         list_attribs = re.split('\t',row)
@@ -104,9 +104,9 @@ def parse(path_to_file):
         df_fields['ixNP'] = pd.to_numeric(df_fields['ixNP'], errors='coerce')
         
         for idx in df_fields["id_article"].unique():
-            # parsing title, keywords and text
-            title = ' '.join(df_fields[(df_fields.id_article == idx) & (df_fields.wert == 'titel')]['word'])
-            keywords = ', '.join(df_fields[(df_fields.id_article == idx) & (df_fields.wert == 'stichwort')]['word'])
+            ## parsing title, keywords and text
+            #title = ' '.join(df_fields[(df_fields.id_article == idx) & (df_fields.wert == 'titel')]['word'])
+            #keywords = ', '.join(df_fields[(df_fields.id_article == idx) & (df_fields.wert == 'stichwort')]['word'])
             text = ' '.join(df_fields[(df_fields.id_article == idx) & (df_fields.wert == 'inhalt')]['word'])
 
             # delete space(s) before: ?!.,;:)
@@ -122,7 +122,7 @@ def parse(path_to_file):
             # Remove all single characters from text
             text = re.sub(r'\s+[a-zA-Z]\s+', ' ', text)
 
-            # identifying and extracting subtitle, if available
+            ## identifying and extracting subtitle, if available
             if text.find('Utl.') != -1:
                 subtitle = text[text.find('Utl.')+6 : text.find('=')]
                 text = text[text.find('=')+2:]
@@ -155,7 +155,7 @@ def parse(path_to_file):
             else:
                 final_note = 'None'
                 
-            # retrieving some fields from the header
+            ## retrieving some fields from the header
             #headers = df_headers.loc[idx,['id', 'datum']].to_list()
             #yield (idx, headers, place, agency, title, subtitle, keywords, text, final_note)
             yield nltk.tokenize.WordPunctTokenizer().tokenize(text)
