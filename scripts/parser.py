@@ -99,9 +99,9 @@ def parse(path_to_file):
                                                'dep', 'ner', 'ix', 'ixNP', 'ixDEP', 'iob', 
                                                'neg', 'lemmasource'])
         
-        df_fields['ix'] = pd.to_numeric(df_fields['ix']).astype(int)
-        df_fields['ixDEP'] = pd.to_numeric(df_fields['ixDEP'], errors='coerce').astype(int)
-        df_fields['ixNP'] = pd.to_numeric(df_fields['ixNP'], errors='coerce')
+        #df_fields['ix'] = pd.to_numeric(df_fields['ix']).astype(int)
+        #df_fields['ixDEP'] = pd.to_numeric(df_fields['ixDEP'], errors='coerce').astype(int)
+        #df_fields['ixNP'] = pd.to_numeric(df_fields['ixNP'], errors='coerce')
         
         for idx in df_fields["id_article"].unique():
             ## parsing title, keywords and text

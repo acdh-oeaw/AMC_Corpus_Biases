@@ -50,15 +50,15 @@ if __name__ == "__main__":
     t0 = time.time()
     for idx in range(0,len(df_files),50):
         print(f'Processing files from {idx} to {idx+50}')
-        print(f'{(time.time() - t0) / 3600} Hrs. processing time')
+        print(f'{(time.time() - t0) / 3600:.2f} Hrs. processing time')
         print()
         articles = articles_reader(idx,idx+50)
         if idx == 0:
-            model = build_model(articles, parameters)
+            model = build_model(articles, parameters, mode=Word2Vec)
         else:
             model = update_model(model, articles)
         
         if idx%5000 == 0:
-            model.save("../outputs/amc.fasttext.300.model")
+            model.save("../outputs/amc.Word2Vec.300-5-3.model")
 
 
