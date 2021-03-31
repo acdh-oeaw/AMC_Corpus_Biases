@@ -48,7 +48,7 @@ if __name__ == "__main__":
                  }
     
     t0 = time.time()
-    for idx in range(0,len(df_files),50):
+    for idx in range(95000,len(df_files),50): #45000
         print(f'Processing files from {idx} to {idx+50}')
         print(f'{(time.time() - t0) / 3600:.2f} Hrs. processing time')
         print()
