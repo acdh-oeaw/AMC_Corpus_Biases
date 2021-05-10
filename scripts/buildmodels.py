@@ -23,15 +23,16 @@ def articles_reader(begin, end):
         responses.extend(response)
     return responses
 
-def build_model(list_sentences, parameters,mode=FastText):
+def build_model(list_sentences, parameters, mode=FastText):
     model = mode(list_sentences,
-                 size=parameters['embedding_size'],
+                 #size=parameters['embedding_size'],
                  window=parameters['window_size'],
                  min_count=parameters['min_word'],
                  sample=parameters['down_sampling'],
                  workers = -1,
                  sg=1,
-                 iter=100)
+                 #iter=100
+                )
     return model
 
 def update_model(model, list_sentences):
@@ -46,19 +47,20 @@ if __name__ == "__main__":
                   'min_word': 3,
                   'down_sampling': 1e-2
                  }
-    
+    #model = Word2Vec.load("../outputs/amc.fasttext.300-5-3.model")
     t0 = time.time()
-    for idx in range(95000,len(df_files),50): #45000
+    for idx in range(0,len(df_files),50): 
         print(f'Processing files from {idx} to {idx+50}')
         print(f'{(time.time() - t0) / 3600:.2f} Hrs. processing time')
         print()
         articles = articles_reader(idx,idx+50)
         if idx == 0:
-            model = build_model(articles, parameters, mode=Word2Vec)
+            model = build_model(articles, parameters, mode=FastText)
         else:
             model = update_model(model, articles)
         
         if idx%5000 == 0:
-            model.save("../outputs/amc.Word2Vec.300-5-3.model")
+            model.save("../outputs/amc.fasttext.300-5-3.model")
+    model.save("../outputs/amc.fasttext.300-5-3.model")
 
 
